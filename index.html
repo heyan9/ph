@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>何岩摄影展示站</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      color: #fff;
+    }
+
+    /* 背景图样式 */
+    .blur-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-size: cover;
+      background-position: center;
+      filter: blur(0px) brightness(0.3);
+      transition: background-image 1s ease-in-out;
+      z-index: -1;
+    }
+
+    /* 主图片 */
+    .slideshow-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .slide-image {
+      max-width: 70%;
+      max-height: 80vh;
+      transition: opacity 1s ease-in-out;
+      border-radius: 15px;
+    }
+
+    /* Logo 样式 */
+    .logo {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: auto;
+      height: 30px;
+      object-fit: contain;
+    }
+
+    /* 描述文字 */
+    .description {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 13px;
+      color: #fff;
+      max-width: 90%;
+      text-align: center;
+    }
+
+    /* 主按钮和子按钮样式 */
+    .main-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      padding: 10px 20px;
+      font-size: 13px;
+      color: #fff;
+      background-color: rgba(0, 0, 0, 0.5);
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .dropdown {
+      display: none;
+      position: absolute;
+      top: 60px;
+      left: 20px;
+      background-color: rgba(0, 0, 0, 0.7);
+      border-radius: 5px;
+      padding: 5px 0;
+    }
+
+    .dropdown button {
+      width: 100%;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 13px;
+      padding: 10px 20px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .dropdown button:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <!-- 背景容器 -->
+  <div id="blur-background" class="blur-background" style="background-image: url('https://pic.imgdb.cn/item/6720d776d29ded1a8c546daa.jpg');"></div>
+
+  <!-- 主图片展示容器 -->
+  <div class="slideshow-container">
+    <img id="slide-image" class="slide-image" src="https://pic.imgdb.cn/item/6720d776d29ded1a8c546daa.jpg" alt="Slideshow Image">
+  </div>
+
+  <!-- Logo -->
+  <a href="https://heyan9.github.io/">
+    <img src="https://pic.imgdb.cn/item/6720d325d29ded1a8c501a96.png" alt="Logo" class="logo">
+  </a>
+
+  <!-- 描述文字 -->
+  <div id="description" class="description">ACC漫展 SONY 6300 Sigma 16 f1.4</div>
+
+  <!-- 主按钮 -->
+  <button class="main-button" onclick="toggleDropdown()">2024年图库</button>
+
+  <!-- 下拉子按钮 -->
+  <div id="dropdown" class="dropdown">
+    <button onclick="switchToAugustGallery()">8月图库</button>
+    <button onclick="switchToSeptemberGallery()">9月图库</button>
+    <button onclick="switchToOctoberGallery()">10月图库</button>
+  </div>
+
+  <script>
+    // 图库数据
+    const augustGallery = [
+      { url: "https://pic.imgdb.cn/item/6720d776d29ded1a8c546daa.jpg", description: "ACC漫展 SONY 6300 Sigma 16 f1.4" },
+      { url: "https://pic.imgdb.cn/item/6720d776d29ded1a8c546e5c.jpg", description: "ACC漫展 SONY 6300 Sigma 16 f1.4" },
+      { url: "https://pic.imgdb.cn/item/6720d776d29ded1a8c546f16.jpg", description: "奕绍·燎原水库 SONY 6300 Sigma 16 f1.4" },
+      { url: "https://pic.imgdb.cn/item/6720d777d29ded1a8c54708b.jpg", description: "奕绍·燎原水库 SONY 6300 Sigma 16 f1.4" },
+      { url: "https://pic.imgdb.cn/item/6720d777d29ded1a8c547190.jpg", description: "奕绍·燎原水库 SONY 6300 Sigma 16 f1.4" }
+    ];
+
+    const septemberGallery = [
+      { url: "https://pic.imgdb.cn/item/6720d581d29ded1a8c52c6d7.jpg", description: "长沙 SONY 6300 Sigma 16 f1.4" }
+    ];
+
+    const octoberGallery = [
+      { url: "https://pic.imgdb.cn/item/6720d3a5d29ded1a8c509c2b.jpg", description: "长沙生态动物园 SONY 6300 Sigma 16 f1.4" },
+      { url: "https://pic.imgdb.cn/item/6720d3b1d29ded1a8c50a907.jpg", description: "汨罗屈子湿地公园 SONY 6300 Sigma 16 f1.4" }
+    ];
+
+    // 默认图库为8月
+    let currentImages = augustGallery;
+    let currentIndex = 0;
+    const slideImage = document.getElementById("slide-image");
+    const blurBackground = document.getElementById("blur-background");
+    const description = document.getElementById("description");
+
+    function showNextImage() {
+      currentIndex = (currentIndex + 1) % currentImages.length;
+      const nextImage = currentImages[currentIndex];
+
+      // 更新主图和背景图
+      slideImage.style.opacity = 0;
+      setTimeout(() => {
+        slideImage.src = nextImage.url;
+        blurBackground.style.backgroundImage = `url(${nextImage.url})`;
+        slideImage.style.opacity = 1;
+      }, 500);
+
+      // 更新描述文字
+      description.innerText = nextImage.description;
+    }
+
+    function switchToAugustGallery() {
+      currentImages = augustGallery;
+      currentIndex = -1;
+      showNextImage();
+      toggleDropdown();
+    }
+
+    function switchToSeptemberGallery() {
+      currentImages = septemberGallery;
+      currentIndex = -1;
+      showNextImage();
+      toggleDropdown();
+    }
+
+    function switchToOctoberGallery() {
+      currentImages = octoberGallery;
+      currentIndex = -1;
+      showNextImage();
+      toggleDropdown();
+    }
+
+    function toggleDropdown() {
+      const dropdown = document.getElementById("dropdown");
+      dropdown.style.display = dropdown.style.display === "none" ? "block" : "none";
+    }
+
+    setInterval(showNextImage, 8000);
+  </script>
+</body>
+</html>
